@@ -15,25 +15,44 @@ dados_gerados <- c(
   521.97, 352.20, 580.84, 408.47, 552.99, 490.31, 570.20, 539.18, 470.39, 499.48
 )
 
-#(a) Ajustar o modelo de regressão linear simples
+#Ajuste do modelo
 modelo <- lm(dados_gerados ~ horas_uso)
 
-#Mostrar o resumo do modelo (aqui vemos o R², coeficientes, p-valor, etc.)
-summary(modelo)
+# Plotar gráfico de dispersão
+plot(horas_uso, dados_gerados,
+     main = "Horas de Uso x Dados Gerados",
+     xlab = "Horas de Uso por Semana",
+     ylab = "Dados Gerados (MB)",
+     pch = 19,
+     col = "blue")
 
-#(a) Mostrar os coeficientes da reta de regressão (intercepto e inclinação)
-coef(modelo)
-#Equação da reta: Dados Gerados = 121,75 + 38,02 × Horas de Uso
-#(b) Interpretação do coeficiente angular:
-#Para cada hora adicional de uso, a quantidade de dados gerados aumenta, em média,
-#cerca de 38,02 unidades.
-#(c) Prever a quantidade de dados gerados para 15 horas de uso
-previsao <- 121.74512 + 38.01724 * 15
-previsao
+# Adicionar linha de regressão
+abline(modelo, col = "red", lwd = 2)
 
-#(d) Avaliação do R²:
-#O valor de R² é 0,6655, indicando que aproximadamente 66,55% da variação na quantidade de dados gerados
-#O modelo é razoavelmente confiável.
-#(e) Calcular o coeficiente de correlação entre horas de uso e dados gerados
-cor(horas_uso, dados_gerados)
-#Indica uma correlação forte e positiva entre as variáveis.
+# a) Equação da regressão
+intercepto <- coef(modelo)[1]
+inclinacao <- coef(modelo)[2]
+cat("a) Equação da reta:\n")
+cat("Y = ", round(intercepto, 2), "+", round(inclinacao, 2), "* X\n\n")
+
+# b) Interpretação do coeficiente angular
+cat("b) Cada hora adicional de uso gera, em média,", round(inclinacao, 2), "MB a mais de dados.\n\n")
+
+# c) Previsão para 15 horas semanais
+prev_15 <- predict(modelo, data.frame(horas_uso = 15))
+cat("c) Previsão para 15 horas de uso:", round(prev_15, 2), "MB\n\n")
+
+# d) Avaliação do modelo
+r2 <- summary(modelo)$r.squared
+cat("d) R² =", round(r2, 4), "\n")
+if (r2 > 0.7) {
+  cat("O modelo é forte e confiável.\n\n")
+} else if (r2 > 0.5) {
+  cat("O modelo é moderadamente confiável.\n\n")
+} else {
+  cat("O modelo é fraco e pouco confiável.\n\n")
+}
+
+# e) Correlação entre X e Y
+r <- cor(horas_uso, dados_gerados)
+cat("e) Coeficiente de correlação (r):", round(r, 4), "\n")
